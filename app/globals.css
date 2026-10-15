@@ -277,18 +277,6 @@
     stroke-dashoffset: 0;
   }
 }
-@keyframes hero-frame {
-  to {
-    clip-path: inset(7% 5% 0 5%);
-    transform: scale(0.97);
-  }
-}
-@keyframes hero-copy-out {
-  to {
-    opacity: 0;
-    transform: translate3d(0, -6vh, 0);
-  }
-}
 @keyframes reveal {
   from {
     opacity: 0;
@@ -327,49 +315,12 @@
     transform: translate3d(0, calc(var(--drift, 80px) * -1), 0);
   }
 }
-@keyframes sala-grow {
-  from {
-    transform: scale(0.3);
-    border-radius: 999px 999px 0 0;
-  }
-  to {
-    transform: none;
-    border-radius: 0;
-  }
-}
-@keyframes sala-out {
-  to {
-    transform: translate3d(var(--dx), var(--dy), 0) scale(1.25);
-    opacity: 0;
-  }
-}
-@keyframes sala-text {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 30px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 @supports (animation-timeline: scroll()) {
   @media (prefers-reduced-motion: no-preference) {
     .thread-path {
       stroke-dasharray: 1;
       animation: draw-thread linear both;
       animation-timeline: scroll(root);
-    }
-    .hero-media {
-      animation: hero-frame linear both;
-      animation-timeline: view();
-      animation-range: exit 0% exit 80%;
-    }
-    .hero-copy {
-      animation: hero-copy-out linear both;
-      animation-timeline: view();
-      animation-range: exit 0% exit 45%;
     }
     [data-reveal] {
       animation: reveal linear both;
@@ -395,25 +346,7 @@
         animation-range: cover 0% cover 100%;
       }
     }
-    /* La sala: the room grows from a small arch to full screen; the others drift away. */
-    .sala {
-      view-timeline: --sala block;
-    }
-    .sala-center {
-      animation: sala-grow linear both;
-      animation-timeline: --sala;
-      animation-range: contain 0% contain 70%;
-    }
-    .sala-side {
-      animation: sala-out linear both;
-      animation-timeline: --sala;
-      animation-range: contain 0% contain 55%;
-    }
-    .sala-text {
-      animation: sala-text linear both;
-      animation-timeline: --sala;
-      animation-range: contain 72% contain 92%;
-    }
+
   }
 }
 

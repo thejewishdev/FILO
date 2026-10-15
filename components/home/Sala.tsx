@@ -2,38 +2,21 @@ import { ReserveButton } from "@/components/layout/ReserveButton";
 import { Photo } from "@/components/ui/Photo";
 import type { PhotoKey } from "@/data/photos";
 
-const sides: { photo: PhotoKey; alt: string; className: string; dx: string; dy: string }[] = [
-  { photo: "darkRoom", alt: "The dining room under low pendant lights", className: "left-[5%] top-[17%] w-[26vw] aspect-[3/4] sm:w-[17vw]", dx: "-32vw", dy: "-22vh" },
-  { photo: "bar", alt: "The bar with its backlit shelves", className: "right-[6%] top-[15%] w-[30vw] aspect-[4/3] sm:w-[19vw]", dx: "32vw", dy: "-26vh" },
-  { photo: "chefPlating", alt: "The pass, under copper lamps", className: "left-[9%] bottom-[9%] w-[24vw] aspect-[4/5] sm:w-[14vw]", dx: "-28vw", dy: "26vh" },
-  { photo: "wineBottles", alt: "Bottles in the cellar", className: "right-[8%] bottom-[11%] w-[30vw] aspect-[16/11] sm:w-[20vw]", dx: "30vw", dy: "24vh" },
+const views: { photo: PhotoKey; alt: string; caption: string }[] = [
+  { photo: "darkRoom", alt: "The dining room under low pendant lights", caption: "The dining room" },
+  { photo: "bar", alt: "The bar with its backlit shelves", caption: "The bar" },
+  { photo: "chefPlating", alt: "The pass, under copper lamps", caption: "The pass" },
+  { photo: "wineBottles", alt: "Bottles in the cellar", caption: "The cellar" },
 ];
 
-/**
- * La sala: a pinned scene driven by scroll (CSS view timeline, no JavaScript). The room starts as
- * a small arch among four smaller views and grows to fill the screen while they drift away; then the
- * words arrive. Without scroll-timeline support it simply shows the final, full-screen state.
- */
+/** La sala: one full-width photograph of the room with its description, then four smaller views. Static: nothing moves on scroll. */
 export function Sala() {
   return (
-    <section aria-labelledby="sala-title" className="sala on-dark relative z-[1] h-[230vh] bg-ink text-bone md:h-[320vh]">
-      <div className="sticky top-0 h-[100svh] overflow-hidden">
-        {sides.map((s) => (
-          <div
-            key={s.photo}
-            className={`sala-side absolute overflow-hidden ${s.className}`}
-            style={{ ["--dx" as string]: s.dx, ["--dy" as string]: s.dy }}
-          >
-            <Photo photo={s.photo} alt={s.alt} fill sizes="(min-width: 640px) 20vw, 30vw" className="object-cover" />
-          </div>
-        ))}
-
-        <div className="sala-center absolute inset-0 z-10 origin-center overflow-hidden">
-          <Photo photo="candleTable" alt="A candlelit table laid for dinner at Filo" fill sizes="100vw" className="object-cover" />
-          <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_top,rgb(25_24_23/0.85)_0%,rgb(25_24_23/0.35)_45%,rgb(25_24_23/0.15)_100%)]" />
-        </div>
-
-        <div className="sala-text absolute inset-x-0 bottom-0 z-20 mx-auto max-w-[90rem] px-5 pb-14 sm:px-10 lg:pb-20">
+    <section aria-labelledby="sala-title" className="on-dark relative z-[1] bg-ink text-bone">
+      <div className="relative isolate flex min-h-[80svh] items-end md:min-h-[92svh]">
+        <Photo photo="candleTable" alt="A candlelit table laid for dinner at Filo" fill sizes="100vw" className="-z-20 object-cover" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgb(25_24_23/0.88)_0%,rgb(25_24_23/0.4)_45%,rgb(25_24_23/0.15)_100%)]" />
+        <div className="mx-auto w-full max-w-[90rem] px-5 pb-14 sm:px-10 lg:pb-20">
           <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
             <h2 id="sala-title" className="text-[clamp(3.5rem,11vw,10rem)] leading-[0.85] italic lg:col-span-6">
               La sala
@@ -51,6 +34,19 @@ export function Sala() {
           </div>
         </div>
       </div>
+
+      <ul className="no-scrollbar mx-auto flex max-w-[90rem] snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 py-14 sm:grid sm:grid-cols-4 sm:gap-6 sm:px-10 md:py-20">
+        {views.map((v) => (
+          <li key={v.photo} className="w-[62vw] shrink-0 snap-start sm:w-auto">
+            <figure>
+              <div className="relative aspect-[4/5] overflow-hidden rounded-t-full bg-bone/5">
+                <Photo photo={v.photo} alt={v.alt} fill sizes="(min-width: 640px) 22vw, 62vw" className="object-cover" />
+              </div>
+              <figcaption className="mt-4 text-center font-display text-[1.2rem] italic text-bone/85">{v.caption}</figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
