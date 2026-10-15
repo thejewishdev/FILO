@@ -1,0 +1,431 @@
+@import "tailwindcss";
+
+@theme {
+  /* Pietra serena stone, ink, Barolo, brass. */
+  --color-stone: #e3e1db;
+  --color-stone-2: #d4d1c8;
+  --color-ink: #191817;
+  --color-ink-soft: #57544e;
+  --color-barolo: #4a1419;
+  --color-barolo-2: #5c1d22;
+  --color-brass: #a8875a;
+  --color-brass-light: #c9ad80;
+  --color-bone: #ede7dd;
+
+  --font-display: var(--font-bodoni), "Bodoni 72", Didot, Georgia, serif;
+  --font-sans: var(--font-jost), "Futura", system-ui, sans-serif;
+
+  --ease-silk: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+@layer base {
+  :root {
+    --header-h: 5rem;
+  }
+
+  html {
+    background: var(--color-stone);
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 5.5rem);
+    -webkit-text-size-adjust: 100%;
+  }
+  @media (min-width: 768px) {
+    html {
+      scroll-padding-top: calc(var(--header-h) + 5.5rem);
+    }
+  }
+
+  body {
+    background: var(--color-stone);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    font-weight: 400;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-barolo);
+    color: var(--color-bone);
+  }
+
+  :focus-visible {
+    outline: 1.5px solid var(--color-barolo);
+    outline-offset: 4px;
+  }
+  .on-dark :focus-visible,
+  .on-dark:focus-visible {
+    outline-color: var(--color-brass-light);
+  }
+}
+
+@layer components {
+  /* Rectangular button; a fill rises from the bottom on hover, a slight press on click. */
+  .btn {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    min-height: 3.25rem;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid currentColor;
+    padding: 0 1.9rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    transition:
+      color 0.6s var(--ease-silk),
+      transform 0.25s var(--ease-silk);
+  }
+  .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--btn-fill, var(--color-ink));
+    transform: translateY(101%);
+    transition: transform 0.6s var(--ease-silk);
+  }
+  .btn:hover {
+    color: var(--btn-text, var(--color-stone));
+  }
+  .btn:hover::before {
+    transform: translateY(0);
+  }
+  .btn:active {
+    transform: scale(0.97);
+  }
+  .btn-solid {
+    background: var(--btn-bg, var(--color-ink));
+    color: var(--btn-solid-text, var(--color-stone));
+    border-color: var(--btn-bg, var(--color-ink));
+  }
+
+  /* Text link with a hairline that draws in from the left. */
+  .link-line {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size 0.6s var(--ease-silk);
+  }
+  .link-line:hover,
+  .link-line[aria-current] {
+    background-size: 100% 1px;
+  }
+
+  .tap {
+    transition: transform 0.25s var(--ease-silk);
+  }
+  .tap:active {
+    transform: scale(0.96);
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  /* Soft fade at both ends of a sideways-scrolling row, so it reads as "swipe for more". */
+  .fade-edges {
+    mask-image: linear-gradient(to right, transparent 0, #000 1.25rem, #000 calc(100% - 2.5rem), transparent 100%);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Native <dialog> with enter/exit transitions. Each panel sets --from. */
+  dialog.sheet {
+    max-width: none;
+    max-height: none;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    overflow: visible;
+    transition:
+      overlay 0.6s allow-discrete,
+      display 0.6s allow-discrete;
+  }
+  dialog.sheet::backdrop {
+    background: rgb(25 24 23 / 0);
+    backdrop-filter: blur(0);
+    transition:
+      background-color 0.5s,
+      backdrop-filter 0.5s,
+      overlay 0.6s allow-discrete,
+      display 0.6s allow-discrete;
+  }
+  dialog.sheet[open]::backdrop {
+    background: rgb(25 24 23 / 0.6);
+    backdrop-filter: blur(4px);
+  }
+  @starting-style {
+    dialog.sheet[open]::backdrop {
+      background: rgb(25 24 23 / 0);
+      backdrop-filter: blur(0);
+    }
+  }
+  dialog.sheet > .sheet-panel {
+    transition:
+      transform 0.7s var(--ease-silk),
+      opacity 0.4s;
+  }
+  dialog.sheet[open] > .sheet-panel {
+    opacity: 1;
+    transform: none;
+  }
+  dialog.sheet:not([open]) > .sheet-panel {
+    opacity: 0;
+    transform: var(--from, translateY(24px));
+  }
+  @starting-style {
+    dialog.sheet[open] > .sheet-panel {
+      opacity: 0;
+      transform: var(--from, translateY(24px));
+    }
+  }
+}
+
+/* Hero: letters of the name rise out of a mask, staggered. Transform only, so paint is never delayed. */
+@keyframes rise {
+  from {
+    transform: translate3d(0, 105%, 0);
+  }
+  to {
+    transform: none;
+  }
+}
+.rise-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding: 0 0.04em;
+}
+.rise {
+  display: inline-block;
+  animation: rise 1.6s var(--ease-silk) both;
+  animation-delay: calc(var(--i, 0) * 90ms + 150ms);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.live-dot {
+  animation: pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.studio-cursor {
+  animation: blink 1.1s steps(1) infinite;
+}
+
+/*
+  Scroll-driven effects (no JavaScript). Browsers without scroll timelines simply show
+  everything in its final state.
+*/
+@keyframes draw-thread {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes hero-frame {
+  to {
+    clip-path: inset(7% 5% 0 5%);
+    transform: scale(0.97);
+  }
+}
+@keyframes hero-copy-out {
+  to {
+    opacity: 0;
+    transform: translate3d(0, -6vh, 0);
+  }
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 48px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes unveil {
+  from {
+    clip-path: inset(18% 0 18% 0);
+    transform: scale(1.12);
+  }
+  to {
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+
+@keyframes word-light {
+  /* Starts at half strength: still legible (3:1 for this large text) before it lights up. */
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes drift {
+  from {
+    transform: translate3d(0, var(--drift, 80px), 0);
+  }
+  to {
+    transform: translate3d(0, calc(var(--drift, 80px) * -1), 0);
+  }
+}
+@keyframes sala-grow {
+  from {
+    transform: scale(0.3);
+    border-radius: 999px 999px 0 0;
+  }
+  to {
+    transform: none;
+    border-radius: 0;
+  }
+}
+@keyframes sala-out {
+  to {
+    transform: translate3d(var(--dx), var(--dy), 0) scale(1.25);
+    opacity: 0;
+  }
+}
+@keyframes sala-text {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 30px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .thread-path {
+      stroke-dasharray: 1;
+      animation: draw-thread linear both;
+      animation-timeline: scroll(root);
+    }
+    .hero-media {
+      animation: hero-frame linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 80%;
+    }
+    .hero-copy {
+      animation: hero-copy-out linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 45%;
+    }
+    [data-reveal] {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 28%;
+    }
+    [data-unveil] {
+      animation: unveil linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+    /* Manifesto: each word brightens as its line passes up through the viewport. */
+    .word {
+      animation: word-light linear both;
+      animation-timeline: view();
+      animation-range: entry 100% cover 55%;
+    }
+    /* Arches drift at different speeds (each sets --drift). Not on phones, where they're a swipeable row. */
+    @media (min-width: 768px) {
+      .drift {
+        animation: drift linear both;
+        animation-timeline: view();
+        animation-range: cover 0% cover 100%;
+      }
+    }
+    /* La sala: the room grows from a small arch to full screen; the others drift away. */
+    .sala {
+      view-timeline: --sala block;
+    }
+    .sala-center {
+      animation: sala-grow linear both;
+      animation-timeline: --sala;
+      animation-range: contain 0% contain 70%;
+    }
+    .sala-side {
+      animation: sala-out linear both;
+      animation-timeline: --sala;
+      animation-range: contain 0% contain 55%;
+    }
+    .sala-text {
+      animation: sala-text linear both;
+      animation-timeline: --sala;
+      animation-range: contain 72% contain 92%;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
