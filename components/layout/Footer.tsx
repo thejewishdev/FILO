@@ -2,7 +2,6 @@ import { MapPin } from "lucide-react";
 import Link from "next/link";
 import { LiveStatus } from "@/components/ui/LiveStatus";
 import { hoursSummary, site } from "@/data/site";
-import { ReserveButton } from "./ReserveButton";
 import { StudioCredit } from "./StudioCredit";
 
 export function Footer() {
@@ -12,17 +11,9 @@ export function Footer() {
   const directions = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=18/${lat}/${lng}`;
 
   return (
-    <footer className="on-dark relative z-[1] bg-ink text-bone">
-      <div className="mx-auto max-w-[90rem] px-5 pt-20 pb-28 sm:px-10 md:pb-12 lg:pt-32">
-        <div className="grid gap-8 border-b border-bone/12 pb-14 md:gap-10 md:pb-20 lg:grid-cols-[1.4fr_1fr] lg:items-end">
-          <h2 className="text-[clamp(2.4rem,6.5vw,6rem)] leading-[0.98] italic">An evening at Filo begins with a reservation.</h2>
-          <div className="flex flex-col gap-5 lg:items-end">
-            <ReserveButton className="w-full sm:w-auto [--btn-fill:var(--color-bone)] [--btn-text:var(--color-ink)]" />
-            <p className="max-w-[22rem] text-[0.95rem] text-bone/70 lg:text-right">Six seats at the pasta counter are kept each night for guests without a booking.</p>
-          </div>
-        </div>
-
-        <div className="grid gap-12 pt-12 md:grid-cols-2 md:gap-14 md:pt-16 lg:grid-cols-[1fr_1fr_1.25fr] lg:gap-16">
+    <footer className="on-dark relative z-[1] border-t border-bone/10 bg-ink text-bone">
+      <div className="mx-auto max-w-[90rem] px-5 pt-16 pb-28 sm:px-10 md:pb-12 lg:pt-24">
+        <div className="grid gap-12 md:grid-cols-2 md:gap-14 lg:grid-cols-[1fr_1fr_1.25fr] lg:gap-16">
           <section aria-labelledby="f-hours">
             <h3 id="f-hours" className="mb-6 text-[1.75rem] italic">
               Hours
